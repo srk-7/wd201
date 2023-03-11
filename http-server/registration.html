@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Registration form</title>
+</head>
+<body>
+    <div class="relative py-3 flex min-h-screen flex-col justify-start">
+        <div class="bg-gray-200 shadow-xl ring-1 ring-gray-900 sm:mx-auto sm:max-w-2g sm:rounded-lg sm:px-10">
+                <h2 class="text-3xl  text-center font-bold my-5">REGISTRATION FORM</h2>
+                        <form action="" id="form">
+						
+                            <label for="name" class="text-md w-40 inline-block font-medium">Name</label>
+							<input required type="text" id="name" name="name" placeholder="Enter full name" class="inline-block rounded-lg bg-black-50 shadow-md py-2 px-3 mb-4"><br>
+							
+							<label for="mail" class="text-md w-40 inline-block font-medium">Email</label>
+							<input required type="email" id="email" name="email" placeholder="Enter email" class="inline-block rounded-lg bg-black-50 shadow-md py-2 px-3 mb-4"><br>
+							
+							<label for="pwd" class="text-md w-40 inline-block font-medium">Password</label>
+							<input required type="password" id="password" name="password" placeholder="Enter Password" class="inline-block rounded-lg bg-black-50 shadow-md py-2 px-3 mb-4"></br>
+							
+							<label for="date" class="text-md w-40 inline-block font-medium">Date of Birth</label>
+							<input required type="date" name="dob" id="dob" placeholder="dd/mm/yyyy" class="inline-block rounded-lg bg-black-50 shadow-md py-2 px-3 mb-4"></br>
+								
+							<input for="acceptTerms" required type="checkbox" name="acceptTerms" id="acceptTerms">
+							<label>Accept Terms & Conditions</label><br><br>
+							
+							<button type="submit" id="submit" class="btn-block shadow-lg px-5 py-1 bg-green-500 text-black mb-4 hover:bg-green-400 rounded-lg ">SUBMIT</button>
+							
+                        </form>
+       
+        </div>
+        <div class="relative bg-white px-4 mt-5 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:rounded-lg sm:px-10 ">
+            <div class="mx-auto">
+                <h2 class="text-x1 text-center font-bold leadin-right">ENTRIES</h2>
+                <div class="divide-y divide-black-60" id="userdata"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
