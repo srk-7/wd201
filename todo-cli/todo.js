@@ -7,40 +7,24 @@ const todoList = () => {
     all[index].completed = true
   }
 
-  const overdue = () => {
-    const today = new Date()
-    const overdueitems = all.filter((item) => {
-      return !item.completed && new Date(item.dueDate) < today
-    })
-    return overdueitems
-  }
-
-  const dueToday = () => {
-    const today = new Date()
-    const todayitems = all.filter((item) => {
-      return !item.completed && new Date(item.dueDate).toDateString() === today.toDateString()
-    })
-    return todayitems
-  }
-
-  const dueLater = () => {
-    const today = new Date()
-    const dueitems = all.filter((item) => {
-      return !item.completed && new Date(item.dueDate) > today
-    })
-    return dueitems
-  }
-
-  const toDisplayableList = (list) => {
-    let display = ""
-    for (let i = 0; i < list.length; i++) {
-      let box = list[i].completed ? "[x]" : "[ ]"
-      let dis = list[i].dis
-      let dueDate = formattedDate(new Date(list[i].dueDate))
-      display += `${box} ${dis} ${dueDate}\n`
+    const overdue = () => {
+      return all.filter((tds) =>  tds.dueDate < new Date().toLocaleDateString("en-CA"));
+    };
+  
+    const dueToday = () => {
+      return all.filter((tds) => new Date().toLocaleDateString("en-CA") == tds.dueDate);
+    };
+  
+    const dueLater = () => {
+      return all.filter((tds) => new Date().toLocaleDateString("en-CA") < tds.dueDate);
+    };
+  
+    const toDisplayableList = (list) => {
+      return list.map((tds) => { 
+          const output=tds.completed ? 'x' : ' ';
+          return `[${output}] ${tds.title} ${tds.dueDate == today ? ' ' : tds.dueDate}`
+      }).join("\n");
     }
-    return display
-  }
 
   return {
     all,
