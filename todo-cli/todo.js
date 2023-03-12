@@ -9,37 +9,37 @@ const todoList = () => {
 
   const overdue = () => {
     const today = new Date()
-    const overdueItems = all.filter((item) => {
+    const overdueitems = all.filter((item) => {
       return !item.completed && new Date(item.dueDate) < today
     })
-    return overdueItems
+    return overdueitems
   }
 
   const dueToday = () => {
     const today = new Date()
-    const todayItems = all.filter((item) => {
+    const todayitems = all.filter((item) => {
       return !item.completed && new Date(item.dueDate).toDateString() === today.toDateString()
     })
-    return todayItems
+    return todayitems
   }
 
   const dueLater = () => {
     const today = new Date()
-    const laterItems = all.filter((item) => {
+    const dueitems = all.filter((item) => {
       return !item.completed && new Date(item.dueDate) > today
     })
-    return laterItems
+    return dueitems
   }
 
   const toDisplayableList = (list) => {
-    let displayableList = ""
+    let display = ""
     for (let i = 0; i < list.length; i++) {
-      let checkbox = list[i].completed ? "[x]" : "[ ]"
-      let title = list[i].title
+      let box = list[i].completed ? "[x]" : "[ ]"
+      let dis = list[i].dis
       let dueDate = formattedDate(new Date(list[i].dueDate))
-      displayableList += `${checkbox} ${title} ${dueDate}\n`
+      display += `${box} ${dis} ${dueDate}\n`
     }
-    return displayableList
+    return display
   }
 
   return {
