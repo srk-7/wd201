@@ -107,12 +107,19 @@ module.exports = (sequelize, DataTypes) => {
       await Todo.update({ completed: true },{where: {id: id,},});
     }
 
+    // displayableString() {
+    //   let checkbox = this.completed ? "[x]" : "[ ]";
+    //   let x=(this.dueDate===new Date().toLocaleDateString("en-CA")?"":this.dueDate);
+    //   let msg = `${this.id}. ${checkbox} ${this.title} ${x}`;
+    //   msg = msg.trimEnd();
+    //   return msg;
+    // }
     displayableString() {
+      const today = new Date().toISOString().slice(0, 10);
       let checkbox = this.completed ? "[x]" : "[ ]";
-      let x=(this.dueDate===new Date().toLocaleDateString("en-CA")?"":this.dueDate);
-      let msg = `${this.id}. ${checkbox} ${this.title} ${x}`;
-      msg = msg.trimEnd();
-      return msg;
+      return `${this.id}. ${checkbox} ${this.title} ${
+        this.dueDate === today ? "" : this.dueDate
+      }`.trim();
     }
   }
   Todo.init({
