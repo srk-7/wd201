@@ -7,7 +7,8 @@
     "start": "nodemon -e js,ejs",
     "start:prod": "node index.js",
     "pretest": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create",
-    "test": "NODE_ENV=test jest --detectOpenHandles"
+    "test": "NODE_ENV=test jest --detectOpenHandles",
+    "prepare": "cd..&&husky install todo-app/.husky"
   },
   "lint-staged": {
     "*.js": [
