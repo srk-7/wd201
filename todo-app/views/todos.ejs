@@ -1,5 +1,31 @@
-<table>
+<!-- <table>
     <% for(var i = 0; i<allTodos.length; i++) { %>
     <tr><td><%= allTodos[i].title %> </td></tr>
     <% } %> 
-</table>
+</table> -->
+
+
+<h5>
+    <%= title %> <span
+    class="bg-gray-100 text-gray-800 text-sm font-small mr-2 px-2.5 py-0.5 rounded dark:bg-gray-200 dark:text-gray-900 justify-center items-center items">
+    <%= data.length %>
+</span>
+</h5>
+<ul class="list-none">
+    <% for(var i=0;i<data.length;i++)
+    {%>
+        <li class="Todo-Item">
+            <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
+                <input id="todo-checkbox-<%= data[i].id %>" type="checkbox" <%=data[i].completed ? "checked" : "" %> onclick="updateTodo(<%= data[i].id %>)" class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300">
+                <label for="todo-checkbox-<%= data[i].id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
+                    <%= data[i].title %>
+                </label>
+                <a href="#" class="hidden trash-icon ml-2" onclick="deleteTodo(<%= data[i].id %>)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>                      
+                </a>
+            </div>
+        </li>
+    <% } %>
+</ul>
