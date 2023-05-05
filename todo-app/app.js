@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const express = require("express");
 const app = express();
-var csrf = require("csurf");
+var csrf = require("tiny-csrf");
 var cookieParser = require("cookie-parser");
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
@@ -9,7 +9,7 @@ const path = require("path");
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("ssh! some secret string"));
-app.use(csrf({ cookie: true }));
+app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
 app.set("view engine", "ejs");
 
