@@ -61,6 +61,10 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    markAsCompleted() {
+      return this.update({ completed: true });
+    }
+
     static async completedItems() {
       return this.findAll({
         where: {
