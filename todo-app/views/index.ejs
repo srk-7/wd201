@@ -8,20 +8,23 @@
             var token=document
                 .querySelector('meta[name="csrf-token"]')
                 .getAttribute("content");
-            function updateTodo(id) {
-                fetch(`/todos/${id}/markAsCompleted`,{
-                    method: "put",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        "_csrf":token
+                function updateTodo(id, completed)
+                {
+                fetch(`/todos/${id}`,{
+                    method :"put",
+                    headers :{"Content-Type": "application/json"},
+                    body:JSON.stringify({
+                        _csrf:token,
+                        completed: !completed
+
                     })
                 })
-                .then((res) => {
+                .then((res) =>{
                     if(res.ok){
                         window.location.reload();
                     }
                 })
-                .catch((err) => console.error(err));
+                .catch((err)=>console.error(err));
             }
             function deleteTodo(id) {
                 fetch(`/todos/${id}`, {
@@ -41,12 +44,12 @@
         </script>
     </head>
     <body>
-        <div class="grid grid-flow-col-5">
-            <div class="col-start-1 col-span-1">
-                <%- include ('header.ejs') %>
+        <div class="grid grid-cols-6">
+            <div class="col-start-3 col-span-2">
+                <%- include ('header') %>
                 <form action="/todos" method="post">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                    <div class="flex gap-3 py-4">
+                    <div class="flex gap-2 py-4">
                         <div class="flex-auto">
                             <input type="text" name="title" placeholder="Enter the Task Name" class="border border-black-300 rounded text-black-900 w-full p-2 text-sm" required />
                         </div>
@@ -62,7 +65,8 @@
                     <%- include('todos.ejs',{title: "Overdue", data: overdue}) %>
                     <%- include('todos.ejs',{title: "Due Today", data: dueToday}) %>
                     <%- include('todos.ejs',{title: "Due Later", data: dueLater}) %>
-                    <%- include('todos.ejs',{title: "completedItems", data: completedItems}) %>
+                    <%- include('todos.ejs',{title: "completedItems", data: completedItems}) %><br><br><br>
+                    <b><%- include('footer') %></b>
                 </div>
             </div>
         </div> 

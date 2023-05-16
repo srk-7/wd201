@@ -41,7 +41,7 @@ app.get("/", async function (request, response) {
     });
   }
 });
-app.get("/todos", async function (_request, response) {
+app.get("/todos", async function (request, response) {
   console.log("Processing list of all Todos ...");
   // FILL IN YOUR CODE HERE
   try {
@@ -64,8 +64,13 @@ app.get("/todos/:id", async function (request, response) {
 });
 
 app.post("/todos", async function (request, response) {
+  console.log("creating a todo", request.body);
   try {
-    const todo = await Todo.addTodo(request.body);
+    // eslint-disable-next-line no-unused-vars
+    const todo = await Todo.addTodo({
+      title: request.body.title,
+      dueDate: request.body.dueDate,
+    });
     return response.redirect("/");
   } catch (error) {
     console.log(error);
@@ -73,11 +78,10 @@ app.post("/todos", async function (request, response) {
   }
 });
 
-app.put("/todos/:id/markAsCompleted", async (request, response) => {
-  console.log("We have to update a todo with id:", request.params.id);
-  const todo = await Todo.findByPk(request.params.id);
+app.put("/todos/:id", async function (request, response) {
   try {
-    const updatedTodo = await Todo.setCompletionStatus(!todo.completed);
+    const todo = await Todo.findByPk(request.params.id);
+    const updatedTodo = await todo.setCompletionStatus(request.body.completed);
     return response.json(updatedTodo);
   } catch (error) {
     console.log(error);
@@ -88,8 +92,8 @@ app.put("/todos/:id/markAsCompleted", async (request, response) => {
 app.delete("/todos/:id", async function (request, response) {
   console.log("Deleting a Todo with ID: ", request.params.id);
   try {
-    await Todo.remove(request.params.id);
-    return response.json({ success: true });
+    const del = await Todo.remove(request.params.id);
+    return response.json(del > 0);
   } catch (error) {
     return response.status(422).json(error);
   }
