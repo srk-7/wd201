@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 var csrf = require("tiny-csrf");
 var cookieParser = require("cookie-parser");
-const { Todo } = require("./models");
+const { Todo, User } = require("./models");
 const bodyParser = require("body-parser");
 const path = require("path");
 app.use(bodyParser.json());
@@ -49,9 +49,20 @@ app.get("/signup", (request, response) => {
   });
 });
 
-app.post("/users", (request, response) => {
+app.post("/users", async (request, response) => {
   //creating the user here
-  console.log("firstName", request.body);
+  console.log("firstName", request.body.firstName);
+  try {
+    const user = await User.create({
+      firstName: request.body.firstName,
+      lastName: request.body.lastName,
+      email: request.body.email,
+      password: request.body.password,
+    });
+    response.redirect("/");
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.get("/todos", async function (request, response) {
