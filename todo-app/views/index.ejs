@@ -47,6 +47,9 @@
         <div class="grid grid-cols-6">
             <div class="col-start-3 col-span-2">
                 <%- include ('header') %>
+                <p class="py-2">Welcome to Todo Application</p>
+                <p class="py-2">New here? <a href="/signup" class="text-green-500">Sign-up</a></p>
+                <p class="py-2">Already have an Account? <a href="/login" class="text-green-500">Sign-in</a></p>
                 <form action="/todos" method="post">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                     <div class="flex gap-2 py-4">

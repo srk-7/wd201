@@ -41,6 +41,19 @@ app.get("/", async function (request, response) {
     });
   }
 });
+
+app.get("/signup", (request, response) => {
+  response.render("signup", {
+    title: "Signup",
+    csrfToken: request.csrfToken(),
+  });
+});
+
+app.post("/users", (request, response) => {
+  //creating the user here
+  console.log("firstName", request.body);
+});
+
 app.get("/todos", async function (request, response) {
   console.log("Processing list of all Todos ...");
   // FILL IN YOUR CODE HERE
