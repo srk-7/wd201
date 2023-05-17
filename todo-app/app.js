@@ -37,10 +37,15 @@ passport.use(
       usernameField: "email",
       passwordField: "password",
     },
-    (usename, password, done) => {
-      User.findOne({ where: { email: this.username, password: password } })
-        .then((user) => {
-          return done(null, user);
+    (username, password, done) => {
+      User.findOne({ where: { email: this.username } })
+        .then(async (user) => {
+          const result = await bcrypt.compare(password, user.password);
+          if (result) {
+            return done(null, user);
+          } else {
+            return done("Invalid Password");
+          }
         })
         .catch((error) => {
           return error;
@@ -80,6 +85,7 @@ app.get(
   "/todo",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
+    const loggedInUser = request.user.id;
     const allTodos = await Todo.getTodos();
     const overdue = await Todo.overdue();
     const dueToday = await Todo.dueToday();
@@ -136,6 +142,22 @@ app.post("/users", async (request, response) => {
     console.log(error);
   }
 });
+
+app.get("/login", async (request, response) => {
+  response.render("login", {
+    title: "Login",
+    csrfToken: request.csrfToken(),
+  });
+});
+
+app.post(
+  "/session",
+  passport.authenticate("local", { failureRedirect: "/login" }),
+  (request, response) => {
+    console.log(request.user);
+    response.redirect("/todo");
+  }
+);
 
 app.get("/todos", async function (request, response) {
   console.log("Processing list of all Todos ...");
