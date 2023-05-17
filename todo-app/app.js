@@ -11,36 +11,97 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("ssh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
+const passport = require("passport");
+const connectEnsureLogin = require("connect-ensure-login");
+const session = require("express-session");
+const LocalStrategy = require("passport-local");
+
+app.use(
+  session({
+    secret: "my_super-secret-key-217263018951768",
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, //24hrs
+    },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    (usename, password, done) => {
+      User.findOne({ where: { email: this.username, password: password } })
+        .then((user) => {
+          return done(null, user);
+        })
+        .catch((error) => {
+          return error;
+        });
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  console.log("Serilaizing user in session", user.id);
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findByPk(id)
+    .then((user) => {
+      done(null, user);
+    })
+    .catch((error) => {
+      done(error, null);
+    });
+});
+
 app.set("view engine", "ejs");
 
 // eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", async function (request, response) {
-  const allTodos = await Todo.getTodos();
-  const overdue = await Todo.overdue();
-  const dueToday = await Todo.dueToday();
-  const dueLater = await Todo.dueLater();
-  const completedItems = await Todo.completedItems();
-  if (request.accepts("html")) {
-    response.render("index", {
-      allTodos,
-      overdue,
-      dueToday,
-      dueLater,
-      completedItems,
-      csrfToken: request.csrfToken(),
-    });
-  } else {
-    response.json({
-      allTodos,
-      overdue,
-      dueToday,
-      dueLater,
-      completedItems,
-    });
-  }
+  response.render("index", {
+    title: "Todo Application",
+    csrfToken: request.csrfToken(),
+  });
 });
+
+app.get(
+  "/todo",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    const allTodos = await Todo.getTodos();
+    const overdue = await Todo.overdue();
+    const dueToday = await Todo.dueToday();
+    const dueLater = await Todo.dueLater();
+    const completedItems = await Todo.completedItems();
+    if (request.accepts("html")) {
+      response.render("todo", {
+        allTodos,
+        overdue,
+        dueToday,
+        dueLater,
+        completedItems,
+        csrfToken: request.csrfToken(),
+      });
+    } else {
+      response.json({
+        allTodos,
+        overdue,
+        dueToday,
+        dueLater,
+        completedItems,
+      });
+    }
+  }
+);
 
 app.get("/signup", (request, response) => {
   response.render("signup", {
@@ -59,7 +120,13 @@ app.post("/users", async (request, response) => {
       email: request.body.email,
       password: request.body.password,
     });
-    response.redirect("/");
+    request.login(user, (err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        response.redirect("/todo");
+      }
+    });
   } catch (error) {
     console.log(error);
   }
