@@ -10,6 +10,9 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("ssh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
+const bcrypt = require("bcrypt");
+
+const saltRounds = 10;
 
 const passport = require("passport");
 const connectEnsureLogin = require("connect-ensure-login");
@@ -112,13 +115,15 @@ app.get("/signup", (request, response) => {
 
 app.post("/users", async (request, response) => {
   //creating the user here
-  console.log("firstName", request.body.firstName);
+  //hash password using bcrypt
+  const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
+  console.log(hashedPwd);
   try {
     const user = await User.create({
       firstName: request.body.firstName,
       lastName: request.body.lastName,
       email: request.body.email,
-      password: request.body.password,
+      password: hashedPwd,
     });
     request.login(user, (err) => {
       if (err) {

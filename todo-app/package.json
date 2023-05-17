@@ -19,6 +19,7 @@
   "author": "srk <aravapallyshivaramakrishna@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "connect-ensure-login": "^0.1.1",
     "cookie-parser": "^1.4.6",
     "csurf": "^1.11.0",
