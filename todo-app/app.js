@@ -38,7 +38,7 @@ passport.use(
       passwordField: "password",
     },
     (username, password, done) => {
-      User.findOne({ where: { email: this.username } })
+      User.findOne({ where: { email: username } })
         .then(async (user) => {
           const result = await bcrypt.compare(password, user.password);
           if (result) {
@@ -85,7 +85,6 @@ app.get(
   "/todo",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
-    const loggedInUser = request.user.id;
     const allTodos = await Todo.getTodos();
     const overdue = await Todo.overdue();
     const dueToday = await Todo.dueToday();
@@ -189,7 +188,7 @@ app.post("/todos", async function (request, response) {
       title: request.body.title,
       dueDate: request.body.dueDate,
     });
-    return response.redirect("/");
+    return response.redirect("/todo");
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
