@@ -202,7 +202,7 @@ app.post(
       const todo = await Todo.addTodo({
         title: request.body.title,
         dueDate: request.body.dueDate,
-        userId: request.body.id, //here
+        userId: request.user.id, //here
       });
       return response.redirect("/todo");
     } catch (error) {
