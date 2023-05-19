@@ -85,11 +85,12 @@ app.get(
   "/todo",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
+    const loggedInUser = request.user.id; //here
     const allTodos = await Todo.getTodos();
-    const overdue = await Todo.overdue();
-    const dueToday = await Todo.dueToday();
-    const dueLater = await Todo.dueLater();
-    const completedItems = await Todo.completedItems();
+    const overdue = await Todo.overdue(loggedInUser); //here
+    const dueToday = await Todo.dueToday(loggedInUser); //here
+    const dueLater = await Todo.dueLater(loggedInUser); //here
+    const completedItems = await Todo.completedItems(loggedInUser); //here
     if (request.accepts("html")) {
       response.render("todo", {
         allTodos,
@@ -195,11 +196,13 @@ app.post(
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     console.log("creating a todo", request.body);
+    console.log(request.user); //here
     try {
       // eslint-disable-next-line no-unused-vars
       const todo = await Todo.addTodo({
         title: request.body.title,
         dueDate: request.body.dueDate,
+        userId: request.body.id, //here
       });
       return response.redirect("/todo");
     } catch (error) {
