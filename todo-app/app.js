@@ -232,10 +232,10 @@ app.put(
 app.delete(
   "/todos/:id",
   connectEnsureLogin.ensureLoggedIn(),
-  async function (request, response) {
+  async (request, response) => {
     console.log("Deleting a Todo with ID: ", request.params.id);
     try {
-      const del = await Todo.remove(request.params.id);
+      await Todo.remove(request.params.id, request.user.id);
       return response.json({ success: true });
     } catch (error) {
       return response.status(422).json(error);
