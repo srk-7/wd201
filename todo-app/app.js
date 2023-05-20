@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 const express = require("express");
 const app = express();
 var csrf = require("tiny-csrf");
@@ -14,10 +14,8 @@ const bcrypt = require("bcrypt");
 const flash = require("connect-flash");
 
 //views accessible globally
-// const path = require("path");
-// app.set("views", path.join(__dirname, "views"));
-// app.use(flash());
-
+app.use(express.static(path.join(__dirname, "public")));
+app.set("views", path.join(__dirname, "views"));
 const saltRounds = 10;
 
 const passport = require("passport");
@@ -25,6 +23,7 @@ const connectEnsureLogin = require("connect-ensure-login");
 const session = require("express-session");
 const LocalStrategy = require("passport-local");
 
+app.use(flash());
 app.use(
   session({
     secret: "my_super-secret-key-217263018951768",
@@ -33,6 +32,10 @@ app.use(
     },
   })
 );
+app.use(function (request, response, next) {
+  response.locals.messages = request.flash();
+  next();
+});
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -50,7 +53,7 @@ passport.use(
           if (result) {
             return done(null, user);
           } else {
-            return done("Invalid Password");
+            return done(null, false, { message: "Invalid password" });
           }
         })
         .catch((error) => {
@@ -130,6 +133,33 @@ app.post("/users", async (request, response) => {
   //hash password using bcrypt
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
   console.log(hashedPwd);
+
+  const fname = request.body.firstName;
+  console.log("fir1", fname);
+  const sname = request.body.lastName;
+  const mail = request.body.email;
+  const pwd = request.body.password;
+  if (!fname) {
+    console.log("fir", fname);
+    request.flash("error", "Please enter the first Name");
+    return response.redirect("/signup");
+  }
+  if (!sname) {
+    request.flash("error", "please enter the second Name");
+    return response.redirect("/signup");
+  }
+  if (!mail) {
+    request.flash("error", "please enter your Email id");
+  }
+  if (!pwd) {
+    request.flash("error", "Please enter valid password");
+    return response.redirect("/signup");
+  }
+  if (pwd < 8) {
+    request.flash("error", "Password length should be atleast 8");
+    return response.redirect("/signup");
+  }
+
   try {
     const user = await User.create({
       firstName: request.body.firstName,
@@ -141,11 +171,13 @@ app.post("/users", async (request, response) => {
       if (err) {
         console.log(err);
       } else {
-        response.redirect("/todo");
+        response.redirect("/todo"); //redireted to p
       }
     });
   } catch (error) {
     console.log(error);
+    request.flash("error", error.message);
+    return response.redirect("/signup");
   }
 });
 
@@ -158,7 +190,10 @@ app.get("/login", async (request, response) => {
 
 app.post(
   "/session",
-  passport.authenticate("local", { failureRedirect: "/login" }),
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
   (request, response) => {
     console.log(request.user);
     response.redirect("/todo");
