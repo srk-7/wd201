@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 const express = require("express");
 const app = express();
 var csrf = require("tiny-csrf");
@@ -57,7 +58,7 @@ passport.use(
           }
         })
         .catch((error) => {
-          return error;
+          return done(null, false, { message: "Email doesn't exist" });
         });
     }
   )
