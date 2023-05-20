@@ -11,6 +11,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("ssh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 const bcrypt = require("bcrypt");
+const flash = require("connect-flash");
+
+//views accessible globally
+// const path = require("path");
+// app.set("views", path.join(__dirname, "views"));
+// app.use(flash());
 
 const saltRounds = 10;
 
