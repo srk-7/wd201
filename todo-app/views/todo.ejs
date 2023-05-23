@@ -51,6 +51,7 @@
                 </svg>
                 <a href="/signout" class="text-black font-bold text-2xl underline absolute top-2 right-10">Signout</a>
                 <%- include ('header') %>
+                <h3 class="text-2xl font-serif font-bold text-yellow-900">Hola! #<%= UserName %></h3>
                 <form action="/todos" method="post">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                     <div class="flex gap-2 py-4">

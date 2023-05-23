@@ -96,6 +96,7 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     const loggedInUser = request.user.id; //here
+    const UserName = request.user.firstName;
     const allTodos = await Todo.getTodos();
     const overdue = await Todo.overdue(loggedInUser); //here
     const dueToday = await Todo.dueToday(loggedInUser); //here
@@ -108,6 +109,7 @@ app.get(
         dueToday,
         dueLater,
         completedItems,
+        UserName,
         csrfToken: request.csrfToken(),
       });
     } else {
@@ -117,6 +119,7 @@ app.get(
         dueToday,
         dueLater,
         completedItems,
+        UserName,
       });
     }
   }
@@ -172,11 +175,12 @@ app.post("/users", async (request, response) => {
       if (err) {
         console.log(err);
       } else {
-        response.redirect("/todo"); //redireted to p
+        response.redirect("/todo");
       }
     });
   } catch (error) {
     console.log(error);
+    request.flash("success", "Sign up successful");
     request.flash("error", error.message);
     return response.redirect("/signup");
   }
